@@ -1,0 +1,1 @@
+<a target="_blank" href="{{route('home')}}" class="logo"><img src="@if(isset($setting->logo)){{asset('uploads/logo').'/'.$setting->logo}} @else{{asset('defaults/logo.png')}} @endif" width="50px" alt="logo"></a>

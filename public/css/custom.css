@@ -1,0 +1,15 @@
+.itemactive {
+    color: #06b714 !important;
+}
+
+.toast-error {
+    background-color: #bd362f !important;
+}
+#example tbody tr td {
+    padding: 0 5px !important;
+}
+
+.table td,
+.table th {
+    padding: 0 !important;
+}

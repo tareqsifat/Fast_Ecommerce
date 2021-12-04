@@ -1,0 +1,294 @@
+#make views
+php artisan make:livewire Front/Includes/Cart/HeaderItems/ShippingCart
+php artisan make:livewire Admin/settings/Systems
+php artisan make:livewire Admin/Category/NewBornCategory
+php artisan make:livewire Admin/Category/NewBornCategoryCU
+php artisan make:livewire Admin/Category/BeforeBornCategory
+php artisan make:livewire Admin/Category/BeforeBornCategoryCU
+#Make:model
+php artisan make:model NewBornCategory -m
+php artisan make:model BeforeBornCategory -m
+
+
+
+#changes:
+1. trake-order
+2. thankyou pages
+3. onsels
+4. Footer.blade
+5 systems
+6. admin/orders/order.php
+7. category create
+8. admin/category.blade
+9. model/category.php **//
+
+10. maincategory.blade
+10. category.blade
+10. child.blade
+10. baby.blade
+11. header.blade
+12. order.blade
+13. singleProduct.blade
+13. singleProductinfo.blade
+14. Admin/sidebar
+15. web.php
+16. homeslider.blade
+17. headerwishlist.blade
+18. web.blade.php
+
+#js
+main.js
+
+
+#css
+1.responsive.css
+2.custom
+3.style
+4.slider.css
+
+
+
+
+<div id="cart_widgate" class="w-100 bgf5 cart-wraper-content visibility-hidden" wire:ignore.self>
+	<div id="cart_wraper_visible" class="cart-wraper bgf5 border-f5f5" wire:ignore.self>
+		<button id="dimisable_cart_widgate" class="cartdismissabel font-size-18 border_none bgffffff font-size-16" type="button"><span class="font-weight-bold" aria-hidden="true">&times;</span></button>
+		<span class="my-cart font-weight-bold pr-3">My Cart</span>
+		@if(Cart::instance('cartProduct')->count()>0)
+		<div class="p-3 main-content-area position-relative">
+			<div class="wrap-iten-in-cart">
+				<h3 class="box-title">Products</h3>
+				<ul id="mycart_scroll_section" class="products-cart cart-scroll mb-1">
+					<style>
+						#mycart_scroll_section {
+							overflow-y: scroll !important;
+							height: 350px !important;
+						}
+
+						@media (min-width: 1200px) {
+							#mycart_scroll_section {
+								overflow-y: scroll !important;
+								height: 500px !important;
+							}
+						}
+
+						@media (min-width: 1600px) {
+							#mycart_scroll_section {
+								overflow-y: scroll !important;
+								height: 600px !important;
+							}
+						}
+
+						@media (min-width: 2100px) {
+							#mycart_scroll_section {
+								overflow-y: scroll !important;
+								height: 700px !important;
+							}
+						}
+
+						.cart-scroll::-webkit-scrollbar {
+							width: 1px;
+						}
+					</style>
+
+					@foreach(Cart::instance('cartProduct')->content() as $cItem)
+					<li>
+						<div class="row d-flex">
+							<div class="col-sm-2 col-xsm-2">
+								<div class="product-image">
+									<figure><img src='{{asset("uploads/products/thumbnails/")}}/{{$cItem->model->thumbnail}}' alt="{{$cItem->model->thumbnail}}"></figure>
+								</div>
+							</div>
+							<div class="col-sm-10 col-xsm-10">
+								<div class="row">
+									<div class="col-sm-12 col-xsm-12 px-0">
+										<div class="product-name">
+											<a class="link-to-product" href="{{route('single',$cItem->model->slug)}}">{{Str::limit($cItem->model->title,40)}}</a>
+										</div>
+									</div>
+								</div>
+								<div class="row mt-2">
+									<div class="col-sm-12 col-xsm-12 d-flex mr-2">
+										<table>
+											<tr>
+												<td width="48">
+													<div class="produtc-price">
+														<p class="price">৳ {{$cItem->price*$cItem->qty}}</p>
+													</div>
+												</td>
+												<td width="48">
+													<div class="cart_quantity  mx-2">
+														<div class="cart-quantity-input ml-4 d-flex">
+															<button wire:click.prevent="decrimentQty('{{$cItem->rowId}}')" class=""><i class="fa fa-minus"></i></button>
+															<button desabled class="btn-desabled">{{$cItem->qty}}</button>
+															<button wire:click.prevent="incrimentQty('{{$cItem->rowId}}')"><i class="fa fa-plus"></i></button>
+														</div>
+													</div>
+												</td>
+												<td width="4">
+													<div class="pl-4 ml-5">
+														<button wire:click.prevent="removeItem('{{$cItem->rowId}}')"><i class="fa fa-trash text-dark" aria-hidden="true"></i></button>
+													</div>
+												</td>
+											</tr>
+										</table>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					@endforeach
+				</ul>
+			</div>
+			<div class="summary summary_Item">
+				<div class="order-summary">
+					<h4 class="title-box mb-1 pb-1">Order Details</h4>
+					<p class="summary-info"><span class="title">Subtotal</span><b class="index">৳ {{Cart::subtotal()}}</b></p>
+					<p class="summary-info total-info mt-0 mb-3 pt-0"><span class="title">Total</span><b class="index">৳ {{Cart::subtotal()}}</b></p>
+				</div>
+				<div class="checkout-info">
+					<a class="py-3 btn border_redious btn-block btn-checkout" href="{{route('user.cart')}}">Check out</a>
+				</div>
+			</div>
+		</div>
+		<!--end main content area-->
+		@else
+		<span class="position-absolute Cart_empty_text"><i>Empty</i></span>
+		@endif
+	</div>
+	<div class="content_opacity"></div>
+	<style>
+		.content_opacity {
+			height: 1000%;
+			width: 100%;
+			content: "";
+			background: #f7f7f700;
+		}
+	</style>
+</div>
+
+
+<div class="w-100 m-auto">
+    <div class="text-align-center">
+        <?php if (!empty($pdata->sale_price)) {
+            $price = str_replace(',', '', $pdata->sale_price);
+        } else {
+            $price = str_replace(',', '', $pdata->price);
+        } ?>
+        @if(!is_null($pdata->impacode))
+        <span wire:click.prevent='addToShipping( {{$pdata->id}}, "{{$pdata->title}}", {{$price}} )' style="color:{{$product_styles->card_button_text_color}}; background: {{$product_styles->card_button_background}} !important; border-color: {{$product_styles->card_button_border}} !important; transition: {{$product_styles->card_button_transition}}s; font-style: {{$product_styles->card_button_font_style}} !important; font-weight: {{$product_styles->card_button_font_weight}};" onMouseOver='this.style.background="{{$product_styles->card_button_hover_background}}", this.style.color="{{$product_styles->card_button_text_hover_color}}", this.style.borderColor="{{$product_styles->card_button_hover_border}}", this.style.fontStyle="{{$product_styles->card_button_hover_font_style}}", this.style.fontWeight="{{$product_styles->card_button_hover_font_weight}}"' onMouseOut='this.style.background="{{$product_styles->card_button_background}}", this.style.color="{{$product_styles->card_button_text_color}}", this.style.borderColor="{{$product_styles->card_button_border}}", this.style.transition="{{$product_styles->card_button_transition}}s", this.style.fontStyle="{{$product_styles->card_button_font_style}}", this.style.fontWeight="{{$product_styles->card_button_font_weight}}"' class="btn px-5">{{$product_styles->card_text}}</span>
+        @else
+        <span wire:click.prevent='addToCart( {{$pdata->id}}, "{{$pdata->title}}", {{$price}} )' style="color:{{$product_styles->card_button_text_color}}; background: {{$product_styles->card_button_background}} !important; border-color: {{$product_styles->card_button_border}} !important; transition: {{$product_styles->card_button_transition}}s; font-style: {{$product_styles->card_button_font_style}} !important; font-weight: {{$product_styles->card_button_font_weight}};" onMouseOver='this.style.background="{{$product_styles->card_button_hover_background}}", this.style.color="{{$product_styles->card_button_text_hover_color}}", this.style.borderColor="{{$product_styles->card_button_hover_border}}", this.style.fontStyle="{{$product_styles->card_button_hover_font_style}}", this.style.fontWeight="{{$product_styles->card_button_hover_font_weight}}"' onMouseOut='this.style.background="{{$product_styles->card_button_background}}", this.style.color="{{$product_styles->card_button_text_color}}", this.style.borderColor="{{$product_styles->card_button_border}}", this.style.transition="{{$product_styles->card_button_transition}}s", this.style.fontStyle="{{$product_styles->card_button_font_style}}", this.style.fontWeight="{{$product_styles->card_button_font_weight}}"' class="btn px-5">{{$product_styles->card_text}}
+            <input type="hidden" name="product_id" value="{{$pdata->id}}">
+            <input type="hidden" name="title" value="{{$pdata->title}}">
+            <input type="hidden" name="price" value="{{$price}}">
+        </span>
+        @endif
+    </div>
+    <div class="text-align-center">
+        <?php
+        $wishData = $wishItem->contains($pdata->id);
+        $dbCheckData = DB::table('wishlists')->where('product_id', '$pdata->id')->first();
+        if ($dbCheckData) {
+            $chkIdDataexists = $dbCheckData->product_id;
+        } else {
+            $chkIdDataexists = null;
+        }
+        ?>
+        <span id="{{$rDiv}}" class="btn px-5 mt-2 wishlist_item" wire:click.prevent='addToWishlist({{$pdata->id}},"{{$pdata->title}}", {{$price}})'>
+            <i class="fa fa-plus-square"></i> Add to wislist
+        </span>
+    </div>
+</div>
+@push('scripts')
+<script>
+    document.addEventListener("livewire:load", function(event) {
+        $(document).ready(function() {
+            $('.add_to_cart_ajax').click(function(e) {
+                e.preventDefault();
+                var row_id = $(this).parents('.cart_quantity').find('.row_id').val();
+                var inc_qtty = $(this).parents('.cart_quantity').find('.mycart_quantity').val();
+                var value = parseInt(inc_qtty, 10);
+                value = isNaN(value) ? 0 : value;
+                if (value < 50) {
+                    value++;
+                    $(this).parents('.cart_quantity').find('.mycart_quantity').val(value);
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        }
+                    });
+                    var data = {
+                        'row_id': row_id,
+                        'totalquantity': value,
+                    }
+                    $.ajax({
+                        url: '/incriment-qty',
+                        type: 'POST',
+                        data: data,
+                        success: function(res) {
+                            // alert(res.total);
+                            $('.totalCart').html(res.total);
+                            $('.ajax_totalqtty').html(res.totalqtty);
+                        }
+                    });
+                }
+
+            });
+        });
+    });
+</script>
+@endpush
+
+
+
+@foreach(Cart::instance('cartProduct')->content() as $key => $cItem)
+					<li class="myChartItems key{{$key}}">
+						<div class="row d-flex">
+							<div class="col-sm-2 col-xsm-2">
+								<div class="product-image">
+									<figure><img src='{{asset("uploads/products/thumbnails/")}}/{{$cItem->model->thumbnail}}' alt="{{$cItem->model->thumbnail}}"></figure>
+								</div>
+							</div>
+							<div class="col-sm-10 col-xsm-10">
+								<div class="row">
+									<div class="col-sm-12 col-xsm-12 px-0">
+										<div class="product-name">
+											<a class="link-to-product" href="{{route('single',$cItem->model->slug)}}">{{Str::limit($cItem->model->title,40)}}</a>
+										</div>
+									</div>
+								</div>
+								<div class="row mt-2">
+									<div class="col-sm-12 col-xsm-12 col-md-12 col-lg-12 mr-2">
+										<table class="w-100">
+											<tr class="rowparent">
+												<td width="48%">
+													<div class="produtc-price">
+														<p class="price">৳ {{$cItem->price}}</p>
+													</div>
+												</td>
+												<td width="48%">
+													<div class="cart_quantity  mx-2">
+														<div class="cart-quantity-input ml-4 d-flex">
+															<input type="hidden" name="row_id" class="row_id" value="{{$cItem->rowId}}">
+															<button class="decriment"><i class="fa fa-minus"></i></button>
+															<button desabled class="btn-desabled"><input type="text" desabled name="mQuantity" class="mycart_quantity" value="{{$cItem->qty}}"></button>
+															<button class="incriment"><i class="fa fa-plus"></i></button>
+														</div>
+													</div>
+												</td>
+												<td width="4%" class="del_cart_item">
+													<div class="pl-4 ml-5">
+														<input type="hidden" name="key" class="key" value="key{{$key}}">
+														<input type="hidden" name="row_id" class="row_id" value="{{$cItem->rowId}}">
+														<button class="delete_cart_Item"><i class="fa fa-trash text-dark" aria-hidden="true"></i></button>
+													</div>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					@endforeach

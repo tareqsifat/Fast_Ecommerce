@@ -1,0 +1,61 @@
+/*home-main-carousel start  */
+.home-category-carousel .owl-nav,
+.home-main-carousel .owl-nav,
+.product-cashon-delevary .owl-nav {
+    position: absolute;
+    right: 0;
+    top: 0px;
+    font-size: 25px;
+}
+.product-cashon-delevary .owl-nav {
+    right: 8%;
+    top: -14%;
+}
+.home-category-carousel .owl-nav button,
+.product-cashon-delevary .owl-nav button,
+.home-main-carousel .owl-nav button {
+    margin: 0px 5px !important;
+}
+/* category page top slder */
+.categoryImage-slider .owl-nav {
+    display: block !important;
+    position: absolute;
+    top: 20%;
+    visibility: hidden;
+}
+.categoryImage-slider:hover .owl-nav {
+    visibility: visible;
+}
+.categoryImage-slider .owl-nav button.owl-prev {
+    float: left !important;
+}
+.categoryImage-slider .owl-nav button.owl-next {
+    float: right !important;
+}
+.categoryImage-slider .owl-nav button.owl-prev,
+.categoryImage-slider .owl-nav button.owl-next {
+    color: #000;
+    font-size: 67px !important;
+    line-height: 1;
+    left: 96px !important;
+}
+/* home banner by category slider */
+.home-category-carousel .owl-nav {
+    display: block !important;
+    top: 30%;
+    /* visibility: hidden; */
+}
+.home-category-carousel:hover .owl-nav {
+    /* visibility: visible; */
+}
+.home-category-carousel .owl-nav button.owl-prev {
+    float: left !important;
+}
+.home-category-carousel .owl-nav button.owl-next {
+    float: right !important;
+}
+.home-category-carousel .owl-nav button.owl-prev,
+.home-category-carousel .owl-nav button.owl-next {
+    color: #000;
+    font-size: 40px !important;
+}
